@@ -2,7 +2,8 @@
 import os
 import jinja2
 import webapp2
-
+import random
+from random import randint
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), autoescape=False)
@@ -29,8 +30,23 @@ class BaseHandler(webapp2.RequestHandler):
 
 class MainHandler(BaseHandler):
     def get(self):
-        return self.render_template("hello.html")
+
+        return self.render_template("main.html")
+
+class LotoHandler(BaseHandler):
+    def get(self):
+        def loto(value):
+            list_of_guesses = [randint(0, 37) for p in range(0, value)]
+            # random(list_of_guesses, value)
+            return str(list_of_guesses).replace('[', '').replace(']', '')
+
+        enviornment = dict()
+
+        enviornment['loto'] = loto(8)
+
+        return self.render_template("loto.html", params=enviornment)
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler),
+    webapp2.Route('/loto', LotoHandler)
 ], debug=True)
